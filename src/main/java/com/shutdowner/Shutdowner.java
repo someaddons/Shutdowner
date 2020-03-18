@@ -1,7 +1,7 @@
-package com.dynamic_view;
+package com.shutdowner;
 
-import com.dynamic_view.config.Configuration;
-import com.dynamic_view.event.EventHandler;
+import com.shutdowner.config.Configuration;
+import com.shutdowner.event.EventHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -9,8 +9,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(Constants.MOD_ID)
-public class DynView
+@Mod(com.dynamic_view.Constants.MOD_ID)
+public class Shutdowner
 {
     public static final Logger LOGGER = LogManager.getLogger();
 
@@ -19,9 +19,8 @@ public class DynView
      */
     private static Configuration config;
 
-    public DynView()
+    public Shutdowner()
     {
-
         config = new Configuration();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         Mod.EventBusSubscriber.Bus.FORGE.bus().get().register(EventHandler.class);
