@@ -46,7 +46,6 @@ public class WatcherThread implements Runnable
 
                     Thread.sleep(60000);
                     printThreads();
-                    System.exit(2);
                     Thread.sleep(10000);
                     Runtime.getRuntime().halt(0);
                 }
@@ -59,7 +58,6 @@ public class WatcherThread implements Runnable
                     Thread.sleep(10000);
                     System.out.println("Server shut down correctly, ending gracefully");
                     printThreads();
-                    System.exit(2);
                     Thread.sleep(10000);
                     Runtime.getRuntime().halt(0);
                 }
@@ -82,7 +80,6 @@ public class WatcherThread implements Runnable
 
                     Thread.sleep(60000);
                     printThreads();
-                    System.exit(2);
                     Thread.sleep(10000);
                     Runtime.getRuntime().halt(0);
                 }

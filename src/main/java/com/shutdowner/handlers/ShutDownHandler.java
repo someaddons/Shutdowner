@@ -2,6 +2,7 @@ package com.shutdowner.handlers;
 
 import com.shutdowner.Shutdowner;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -35,17 +36,19 @@ public class ShutDownHandler
 
             if (secondsPassed > shutdownInterval)
             {
-                ServerLifecycleHooks.getCurrentServer()
-                  .getPlayerList()
-                  .getPlayers()
-                  .forEach(player -> player.connection.disconnect(new StringTextComponent("Server shutting down")));
+                List<ServerPlayerEntity> players = new ArrayList<>(
+                  ServerLifecycleHooks.getCurrentServer()
+                    .getPlayerList()
+                    .getPlayers());
 
                 if (secondsPassed > shutdownInterval + 1)
                 {
-                    ServerLifecycleHooks.getCurrentServer()
-                      .getPlayerList()
-                      .getPlayers()
-                      .forEach(player -> player.connection.disconnect(new StringTextComponent("Server shutting down")));
+                    List<ServerPlayerEntity> playerss = new ArrayList<>(
+                      ServerLifecycleHooks.getCurrentServer()
+                        .getPlayerList()
+                        .getPlayers());
+
+                    playerss.forEach(player -> player.connection.disconnect(new StringTextComponent("Server shutting down")));
                     serverStartedTime = System.currentTimeMillis();
                     ServerLifecycleHooks.getCurrentServer().initiateShutdown(false);
                 }
