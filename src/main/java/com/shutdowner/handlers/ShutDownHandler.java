@@ -64,7 +64,7 @@ public class ShutDownHandler
             Shutdowner.LOGGER.info(announcements.get(announceMentIndex).getB());
             for (final PlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
             {
-                player.sendMessage(new StringTextComponent(announcements.get(announceMentIndex).getB()));
+                player.sendMessage(new StringTextComponent(announcements.get(announceMentIndex).getB()), player.getUniqueID());
             }
             announceMentIndex++;
         }
@@ -82,7 +82,7 @@ public class ShutDownHandler
     public static void onServerStart()
     {
         announcements.clear();
-        announcements.add(new Tuple<>(300, "Server is shutting down in 5min"));
+        announcements.add(new Tuple<>(300, "Server is restarting in 5min"));
         announcements.add(new Tuple<>(180, "3 minutes till shutdown"));
         announcements.add(new Tuple<>(120, "2 minutes till shutdown"));
         announcements.add(new Tuple<>(60, "1 minute till shutdown"));

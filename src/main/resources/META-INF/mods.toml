@@ -10,11 +10,12 @@ loaderVersion="[28,)" #mandatory (28 is current forge version)
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/ldtteam/Performant/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
+license="ARR"
 [[mods]] #mandatory
 # The modid of the mod
 modId="shutdowner" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="1.6" #mandatory
+version="1.8" #mandatory
  # A display name for the mod
 displayName="Shutdown mod for timed and no stuck" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
