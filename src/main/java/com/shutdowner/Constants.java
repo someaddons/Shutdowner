@@ -1,4 +1,4 @@
-package com.dynamic_view;
+package com.shutdowner;
 
 public abstract class Constants
 {
