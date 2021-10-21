@@ -8,9 +8,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

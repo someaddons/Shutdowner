@@ -2,7 +2,7 @@ package com.shutdowner.threading;
 
 import com.shutdowner.Shutdowner;
 import com.shutdowner.event.EventHandler;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -34,10 +34,10 @@ public class WatcherThread implements Runnable
                  */
                 if (shuttingDown.get() && System.currentTimeMillis() - shutDownTime.get() > maxShutDownTime.get())
                 {
-                    System.out.println("Detected server shutdown hanging, killing");
+                    Shutdowner.LOGGER.warn("Detected server shutdown hanging, killing");
                     try
                     {
-                        Executors.newCachedThreadPool().submit(() -> ServerLifecycleHooks.getCurrentServer().save(true, false, false));
+                        Executors.newCachedThreadPool().submit(() -> ServerLifecycleHooks.getCurrentServer().saveAllChunks(true, false, false));
                     }
                     catch (Exception e)
                     {
@@ -55,10 +55,9 @@ public class WatcherThread implements Runnable
                  */
                 if (shutDownDone.get())
                 {
-                    Thread.sleep(10000);
-                    System.out.println("Server shut down correctly, ending gracefully");
-                    printThreads();
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
+                    Shutdowner.LOGGER.warn("Server shut down correctly, ending gracefully");
+                    Thread.sleep(1000);
                     Runtime.getRuntime().halt(0);
                 }
 
@@ -67,11 +66,11 @@ public class WatcherThread implements Runnable
                  */
                 if (Shutdowner.getConfig().getCommonConfig().shouldDetectHang.get() && System.currentTimeMillis() - lastTick.get() > FIVEMINMILISECONDS)
                 {
-                    System.out.println("Detected server hanging, shutting down");
+                    Shutdowner.LOGGER.warn("Detected server hanging, shutting down");
 
                     try
                     {
-                        Executors.newCachedThreadPool().submit(() -> ServerLifecycleHooks.getCurrentServer().save(true, false, false));
+                        Executors.newCachedThreadPool().submit(() -> ServerLifecycleHooks.getCurrentServer().saveAllChunks(true, false, false));
                     }
                     catch (Exception e)
                     {
@@ -88,7 +87,7 @@ public class WatcherThread implements Runnable
             }
             catch (InterruptedException e)
             {
-                System.out.println("Shutdowner watcher thread interrupted, shutting down");
+                Shutdowner.LOGGER.warn("Shutdowner watcher thread interrupted, shutting down");
                 EventHandler.executor.shutdownNow();
                 break;
             }
@@ -111,11 +110,11 @@ public class WatcherThread implements Runnable
             {
                 if (entry.getKey() != Thread.currentThread() && !entry.getKey().isDaemon())
                 {
-                    System.out.println("------------ Thread: " + entry.getKey().getName() + " is still running! stacktrace below");
+                    Shutdowner.LOGGER.warn("------------ Thread: " + entry.getKey().getName() + " is still running! stacktrace below");
 
                     for (StackTraceElement element : entry.getValue())
                     {
-                        System.out.println(element.toString());
+                        Shutdowner.LOGGER.warn(element.toString());
                     }
                 }
             }

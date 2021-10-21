@@ -2,6 +2,7 @@ package com.shutdowner;
 
 import com.shutdowner.config.Configuration;
 import com.shutdowner.event.EventHandler;
+import com.shutdowner.event.ModEventHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -23,6 +24,7 @@ public class Shutdowner
     {
         config = new Configuration();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        Mod.EventBusSubscriber.Bus.MOD.bus().get().register(ModEventHandler.class);
         Mod.EventBusSubscriber.Bus.FORGE.bus().get().register(EventHandler.class);
     }
 
@@ -34,6 +36,6 @@ public class Shutdowner
     private void setup(final FMLCommonSetupEvent event)
     {
         // some preinit code
-        LOGGER.info("Zooming chunks initiated!");
+        LOGGER.info("Shutdowner loaded");
     }
 }

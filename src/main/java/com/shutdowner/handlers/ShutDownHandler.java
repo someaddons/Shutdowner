@@ -1,12 +1,14 @@
 package com.shutdowner.handlers;
 
 import com.shutdowner.Shutdowner;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,13 +19,14 @@ public class ShutDownHandler
 {
     private static       int  tickTimer         = 0;
     private static final int  TICK_INTERVAL     = 20;
-    private static       long shutdownInterval  = Shutdowner.getConfig().getCommonConfig().shutDownInterval.get() * 60;
+    private static       long shutdownInterval  = 600;
     private static       long serverStartedTime = 0;
     private static       int  secondsPassed     = 0;
 
     private static int announceMentIndex = 0;
 
-    private static final List<Tuple<Integer, String>> announcements = new ArrayList<>();
+    public static final List<Tuple<Integer, String>>  announcements = new ArrayList<>();
+    public static final List<Tuple<Integer, Integer>> shutdownTimes = new ArrayList<>();
 
     public static void onServerTick()
     {
@@ -36,24 +39,44 @@ public class ShutDownHandler
 
             if (secondsPassed > shutdownInterval)
             {
-                List<ServerPlayerEntity> players = new ArrayList<>(
-                  ServerLifecycleHooks.getCurrentServer()
-                    .getPlayerList()
-                    .getPlayers());
-
                 if (secondsPassed > shutdownInterval + 1)
                 {
-                    List<ServerPlayerEntity> playerss = new ArrayList<>(
+                    List<ServerPlayer> playerss = new ArrayList<>(
                       ServerLifecycleHooks.getCurrentServer()
                         .getPlayerList()
                         .getPlayers());
 
-                    playerss.forEach(player -> player.connection.disconnect(new StringTextComponent("Server shutting down")));
+                    playerss.forEach(player -> player.connection.disconnect(new TextComponent(Shutdowner.getConfig().getCommonConfig().disconnectMessage.get())));
                     serverStartedTime = System.currentTimeMillis();
-                    ServerLifecycleHooks.getCurrentServer().initiateShutdown(false);
+                    ServerLifecycleHooks.getCurrentServer().halt(false);
                 }
             }
         }
+    }
+
+    /**
+     * Returns the time to shutdown in seconds
+     *
+     * @return
+     */
+    private static long getTimeToNextShutdown()
+    {
+        long max = 240000;
+        for (final Tuple<Integer, Integer> shutdownTime : shutdownTimes)
+        {
+            LocalTime localShutdownTime = LocalTime.of(shutdownTime.getA(), shutdownTime.getB());
+            long diff = LocalTime.now().until(localShutdownTime, ChronoUnit.SECONDS);
+            if (diff < 0)
+            {
+                // If its negative shift it into the next day
+                diff += 86400;
+            }
+            if (diff < max && diff >= 0)
+            {
+                max = diff;
+            }
+        }
+        return max;
     }
 
     public static void announceShutdown()
@@ -62,9 +85,9 @@ public class ShutDownHandler
         if (announceMentIndex < announcements.size() && secondsLeft <= announcements.get(announceMentIndex).getA())
         {
             Shutdowner.LOGGER.info(announcements.get(announceMentIndex).getB());
-            for (final PlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+            for (final Player player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
             {
-                player.sendMessage(new StringTextComponent(announcements.get(announceMentIndex).getB()), player.getUniqueID());
+                player.sendMessage(new TextComponent(announcements.get(announceMentIndex).getB()), player.getUUID());
             }
             announceMentIndex++;
         }
@@ -73,32 +96,15 @@ public class ShutDownHandler
     /**
      * Resets the current shutdown
      */
-    private static void reset()
+    public static void reset()
     {
         serverStartedTime = System.currentTimeMillis();
         announceMentIndex = 0;
+        shutdownInterval = getTimeToNextShutdown();
     }
 
     public static void onServerStart()
     {
-        announcements.clear();
-        announcements.add(new Tuple<>(300, "Server is restarting in 5min"));
-        announcements.add(new Tuple<>(180, "3 minutes till shutdown"));
-        announcements.add(new Tuple<>(120, "2 minutes till shutdown"));
-        announcements.add(new Tuple<>(60, "1 minute till shutdown"));
-        announcements.add(new Tuple<>(30, "30 sec till shutdown"));
-        announcements.add(new Tuple<>(10, "10 sec till shuwdown"));
-        announcements.add(new Tuple<>(9, "9"));
-        announcements.add(new Tuple<>(8, "8"));
-        announcements.add(new Tuple<>(7, "7"));
-        announcements.add(new Tuple<>(6, "6"));
-        announcements.add(new Tuple<>(5, "5"));
-        announcements.add(new Tuple<>(4, "4"));
-        announcements.add(new Tuple<>(3, "3"));
-        announcements.add(new Tuple<>(2, "2"));
-        announcements.add(new Tuple<>(1, "1"));
-        announcements.add(new Tuple<>(0, "Shutting down now"));
-
         reset();
     }
 }
