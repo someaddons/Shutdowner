@@ -2,7 +2,7 @@ package com.shutdowner.threading;
 
 import com.shutdowner.Shutdowner;
 import com.shutdowner.event.EventHandler;
-import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.Map;
 import java.util.concurrent.Executors;

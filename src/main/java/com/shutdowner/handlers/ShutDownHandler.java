@@ -1,11 +1,11 @@
 package com.shutdowner.handlers;
 
 import com.shutdowner.Shutdowner;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -46,7 +46,7 @@ public class ShutDownHandler
                         .getPlayerList()
                         .getPlayers());
 
-                    playerss.forEach(player -> player.connection.disconnect(new TextComponent(Shutdowner.getConfig().getCommonConfig().disconnectMessage.get())));
+                    playerss.forEach(player -> player.connection.disconnect(Component.literal(Shutdowner.getConfig().getCommonConfig().disconnectMessage.get())));
                     serverStartedTime = System.currentTimeMillis();
                     ServerLifecycleHooks.getCurrentServer().halt(false);
                 }
@@ -87,7 +87,7 @@ public class ShutDownHandler
             Shutdowner.LOGGER.info(announcements.get(announceMentIndex).getB());
             for (final Player player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
             {
-                player.sendMessage(new TextComponent(announcements.get(announceMentIndex).getB()), player.getUUID());
+                player.displayClientMessage(Component.literal(announcements.get(announceMentIndex).getB()), false);
             }
             announceMentIndex++;
         }

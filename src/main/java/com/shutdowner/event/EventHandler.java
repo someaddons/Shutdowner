@@ -6,11 +6,11 @@ import com.shutdowner.threading.WatcherThread;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,21 +27,21 @@ public class EventHandler
 
     @SubscribeEvent
     @OnlyIn(Dist.DEDICATED_SERVER)
-    public static void onServerStopping(final FMLServerStoppingEvent event)
+    public static void onServerStopping(final ServerStoppingEvent event)
     {
         watcherThread.notifyShutDownEvent();
     }
 
     @SubscribeEvent
     @OnlyIn(Dist.DEDICATED_SERVER)
-    public static void onServerStopping(final FMLServerStoppedEvent event)
+    public static void onServerStopping(final ServerStoppedEvent event)
     {
         watcherThread.notifyShutDownDone();
     }
 
     @SubscribeEvent
     @OnlyIn(Dist.DEDICATED_SERVER)
-    public static void onServerStarted(final FMLServerStartedEvent event)
+    public static void onServerStarted(final ServerStartedEvent event)
     {
         ShutDownHandler.onServerStart();
     }
@@ -58,7 +58,7 @@ public class EventHandler
 
     @SubscribeEvent
     @OnlyIn(Dist.DEDICATED_SERVER)
-    public static void onWorldLoad(final WorldEvent.Load event)
+    public static void onWorldLoad(final LevelEvent.Load event)
     {
         if (watcherThread == null && Shutdowner.getConfig().getCommonConfig().shouldDetectShutDownHang.get())
         {
