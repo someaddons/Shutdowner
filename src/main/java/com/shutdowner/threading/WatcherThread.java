@@ -37,7 +37,7 @@ public class WatcherThread implements Runnable
                     Shutdowner.LOGGER.warn("Detected server shutdown hanging, killing");
                     try
                     {
-                        Executors.newCachedThreadPool().submit(() -> ServerLifecycleHooks.getCurrentServer().saveAllChunks(true, false, false));
+                        Executors.newCachedThreadPool().submit(() -> ServerLifecycleHooks.getCurrentServer().saveEverything(true, false, false));
                     }
                     catch (Exception e)
                     {
@@ -70,7 +70,7 @@ public class WatcherThread implements Runnable
 
                     try
                     {
-                        Executors.newCachedThreadPool().submit(() -> ServerLifecycleHooks.getCurrentServer().saveAllChunks(true, false, false));
+                        Executors.newCachedThreadPool().submit(() -> ServerLifecycleHooks.getCurrentServer().saveEverything(true, false, false));
                     }
                     catch (Exception e)
                     {
