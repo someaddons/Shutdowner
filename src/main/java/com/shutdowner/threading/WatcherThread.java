@@ -44,7 +44,7 @@ public class WatcherThread implements Runnable
                         Shutdowner.LOGGER.warn("Error during saving before killing:", e);
                     }
 
-                    Thread.sleep(60000);
+                    Thread.sleep(30000);
                     printThreads();
                     Thread.sleep(10000);
                     Runtime.getRuntime().halt(0);
@@ -77,7 +77,7 @@ public class WatcherThread implements Runnable
                         Shutdowner.LOGGER.warn("Error during saving before killing:", e);
                     }
 
-                    Thread.sleep(60000);
+                    Thread.sleep(30000);
                     printThreads();
                     Thread.sleep(10000);
                     Runtime.getRuntime().halt(0);
@@ -104,21 +104,24 @@ public class WatcherThread implements Runnable
      */
     private void printThreads()
     {
-        if (Shutdowner.getConfig().getCommonConfig().printThreads.get())
+        Executors.newCachedThreadPool().submit(() ->
         {
-            for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet())
+            if (Shutdowner.getConfig().getCommonConfig().printThreads.get())
             {
-                if (entry.getKey() != Thread.currentThread() && !entry.getKey().isDaemon())
+                for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet())
                 {
-                    Shutdowner.LOGGER.warn("------------ Thread: " + entry.getKey().getName() + " is still running! stacktrace below");
-
-                    for (StackTraceElement element : entry.getValue())
+                    if (entry.getKey() != Thread.currentThread() && !entry.getKey().isDaemon())
                     {
-                        Shutdowner.LOGGER.warn(element.toString());
+                        Shutdowner.LOGGER.warn("------------ Thread: " + entry.getKey().getName() + " is still running! stacktrace below");
+
+                        for (StackTraceElement element : entry.getValue())
+                        {
+                            Shutdowner.LOGGER.warn(element.toString());
+                        }
                     }
                 }
             }
-        }
+        });
     }
 
     /**
