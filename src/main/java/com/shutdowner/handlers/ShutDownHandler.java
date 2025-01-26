@@ -1,11 +1,12 @@
 package com.shutdowner.handlers;
 
 import com.shutdowner.Shutdowner;
+import com.shutdowner.config.CommonConfiguration;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -30,7 +31,7 @@ public class ShutDownHandler
 
     public static void onServerTick()
     {
-        if (++tickTimer == TICK_INTERVAL && Shutdowner.getConfig().getCommonConfig().shouldAutoShutDown.get())
+        if (++tickTimer == TICK_INTERVAL && CommonConfiguration.config.getCommonConfig().shouldAutoShutDown)
         {
             tickTimer = 0;
 
@@ -46,7 +47,7 @@ public class ShutDownHandler
                         .getPlayerList()
                         .getPlayers());
 
-                    playerss.forEach(player -> player.connection.disconnect(Component.literal(Shutdowner.getConfig().getCommonConfig().disconnectMessage.get())));
+                    playerss.forEach(player -> player.connection.disconnect(Component.literal(CommonConfiguration.config.getCommonConfig().disconnectMessage)));
                     serverStartedTime = System.currentTimeMillis();
                     ServerLifecycleHooks.getCurrentServer().halt(false);
                 }

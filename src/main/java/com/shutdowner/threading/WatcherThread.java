@@ -1,8 +1,9 @@
 package com.shutdowner.threading;
 
 import com.shutdowner.Shutdowner;
+import com.shutdowner.config.CommonConfiguration;
 import com.shutdowner.event.EventHandler;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -64,7 +65,7 @@ public class WatcherThread implements Runnable
                 /**
                  * Detects whether the server is hanging
                  */
-                if (Shutdowner.getConfig().getCommonConfig().shouldDetectHang.get() && System.currentTimeMillis() - lastTick.get() > FIVEMINMILISECONDS)
+                if (CommonConfiguration.config.getCommonConfig().shouldDetectHang && System.currentTimeMillis() - lastTick.get() > FIVEMINMILISECONDS)
                 {
                     Shutdowner.LOGGER.warn("Detected server hanging, shutting down");
 
@@ -106,7 +107,7 @@ public class WatcherThread implements Runnable
     {
         Executors.newCachedThreadPool().submit(() ->
         {
-            if (Shutdowner.getConfig().getCommonConfig().printThreads.get())
+            if (CommonConfiguration.config.getCommonConfig().printThreads)
             {
                 for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet())
                 {
@@ -131,7 +132,7 @@ public class WatcherThread implements Runnable
     {
         shuttingDown.set(true);
         shutDownTime.set(System.currentTimeMillis());
-        maxShutDownTime.set(Shutdowner.getConfig().getCommonConfig().maxShutDownTime.get() * 1000);
+        maxShutDownTime.set(CommonConfiguration.config.getCommonConfig().maxShutDownTime * 1000L);
     }
 
     /**
