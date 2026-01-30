@@ -3,9 +3,8 @@ package com.shutdowner.event;
 import com.shutdowner.config.CommonConfiguration;
 import com.shutdowner.handlers.ShutDownHandler;
 import com.shutdowner.threading.WatcherThread;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -25,7 +24,6 @@ public class EventHandler
      */
     private static WatcherThread watcherThread;
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public static void onServerStopping(final ServerStoppingEvent event)
     {
@@ -33,14 +31,12 @@ public class EventHandler
     }
 
     @SubscribeEvent
-    @OnlyIn(Dist.DEDICATED_SERVER)
     public static void onServerStopping(final ServerStoppedEvent event)
     {
         watcherThread.notifyShutDownDone();
     }
 
     @SubscribeEvent
-    @OnlyIn(Dist.DEDICATED_SERVER)
     public static void onServerStarted(final ServerStartedEvent event)
     {
         ShutDownHandler.onServerStart();
@@ -50,7 +46,10 @@ public class EventHandler
     public static void onServerTick(final ServerTickEvent.Post event)
     {
         watcherThread.onServerTick();
-        ShutDownHandler.onServerTick();
+        if (FMLEnvironment.dist.isDedicatedServer())
+        {
+            ShutDownHandler.onServerTick();
+        }
     }
 
     public static ExecutorService executor = Executors.newFixedThreadPool(1);
