@@ -1,7 +1,7 @@
 {
   "required": false,
   "package": "com.shutdowner.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "refmap": "shutdowner.refmap.json",
   "mixins": [
   ],
