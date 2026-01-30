@@ -47,7 +47,6 @@ public class EventHandler
     }
 
     @SubscribeEvent
-    @OnlyIn(Dist.DEDICATED_SERVER)
     public static void onServerTick(final TickEvent.ServerTickEvent event)
     {
         watcherThread.onServerTick();
