@@ -22,7 +22,7 @@ public class EventHandler
     /**
      * Update frequency
      */
-    private static WatcherThread watcherThread;
+    public static WatcherThread watcherThread;
 
     @SubscribeEvent
     public static void onServerStopping(final ServerStoppingEvent event)
